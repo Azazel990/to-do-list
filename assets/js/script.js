@@ -1,7 +1,7 @@
 $(document).ready(function(){
     
     const enterKey = 13;
-    const taskList = $("#task-list");
+    const incomplete = $("#incomplete");
     const tasks = $(".task");
     const sampleTask = $("#sample-task");
     // event triggers...
@@ -16,10 +16,26 @@ $(document).ready(function(){
     // event triggers...
 
     createTask = () => {
+        
         const new_task = $(sampleTask).clone();
+
         new_task.removeAttr("id");
         new_task.children("input").addClass("inp");
-        new_task.prependTo("#task-list");
+        new_task.appendTo(incomplete);
+        
+        const total = $("#incomplete .inp").length;
+        new_task.attr("data-task-no",total)
+
+        storeData();
+
+    }
+
+    storeData = () => {
+        let incomplete = [];
+        let compelete = [];
+        $("#incomplete .inp").each((index,element) => {
+            console.log($(this));
+        })
     }
 
     checkDuplicate = (task) => {
