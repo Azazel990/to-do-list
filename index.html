@@ -7,22 +7,19 @@
     <title>To-Do-List</title>
     
  
-    <link rel="stylesheet" href="assets/css/bootstrap-icons.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+
     <link rel="stylesheet" href="assets/css/bootstrap.min.css">
+    <link rel="stylesheet" href="assets/css/style.css">
     
     <script src="assets/js/jquery.js"></script>
 </head>
 
 <style>
-    .container{
-        border: 2px solid red;
-    }
     .custom-container{
         max-width: 70%;
-        border: 2px solid blue;
         margin-left: auto;
         margin-right: auto;
-        min-height: 500px;
     }
     header{
         text-align: center;
@@ -34,14 +31,25 @@
     .task {
         width:80%;
         margin: 5px 0;
-        border: 2px solid green;
+        background: var(--task-grey);
     }
     .task input{
         width: 80% !important;
+        padding: 5px 5px;
+        background: var(--task-grey) !important;
+    }
+    .task .options{
+        min-width: 20%;
     }
     #task-list{
         margin: 25px 0;
-        border: 2px solid black;
+        min-height: 300px;
+    }
+    .shadow{
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    }
+    #completed{
+        opacity: 0.4;
     }
 </style>
 
@@ -55,10 +63,24 @@
                 <h5>To Do List</h5>
             </header>
         
-            <div id="task-list" class="container-fluid d-flex flex-column justify-content-center align-items-center">
-                <div class="task"><input type="text" value="sample"></div>
-                <div class="task"><input type="text" value="sample"></div>
-                <div class="task"><input type="text" value="sample"></div>
+            <div id="task-list" class="container-fluid d-flex flex-column justify-content-start align-items-center">
+                <div class="task shadow d-flex" id="sample-task">
+                    <input  type="text" placeholder="Enter Task...">
+                    <div class="options d-flex align-items-center">
+                        <input type="checkbox" name="" id="">
+                        <i class="bi bi-trash"></i>
+                    </div>
+                </div>
+            </div>
+            <hr>
+            <div id="completed" class="container-fluid d-flex flex-column justify-content-start align-items-center">
+                <div class="task shadow d-flex" >
+                    <input type="text" >
+                    <div class="options d-flex align-items-center">
+                        <input type="checkbox" name="" id="">
+                        <i class="bi bi-trash"></i>
+                    </div>
+                </div>
             </div>
         </main>
     </div>
