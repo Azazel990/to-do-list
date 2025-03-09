@@ -96,13 +96,11 @@
     TaskObj.task = $(".task");
     TaskObj.sampleTask = $("#sample-task")
 
-    console.log(TaskObj.task);
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
         if(event.which == TaskObj.enterKey){
             TaskObj.createTask();
 
-            $(sampleTask).val("");
         }    
     })
 </script>
