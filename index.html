@@ -12,9 +12,55 @@
     
     <script src="assets/js/jquery.js"></script>
 </head>
+
+<style>
+    .container{
+        border: 2px solid red;
+    }
+    .custom-container{
+        max-width: 70%;
+        border: 2px solid blue;
+        margin-left: auto;
+        margin-right: auto;
+        min-height: 500px;
+    }
+    header{
+        text-align: center;
+        margin: 10px 0;
+    }
+    header h5{
+        font-size: 2em;
+    }
+    .task {
+        width:80%;
+        margin: 5px 0;
+        border: 2px solid green;
+    }
+    .task input{
+        width: 80% !important;
+    }
+    #task-list{
+        margin: 25px 0;
+        border: 2px solid black;
+    }
+</style>
+
+<script defer src="assets/js/script.js"></script>
+
 <body>
-    <main class="container">
-        <h5>To Do List</h5>
-    </main>
+    <div class="container">
+        <main class="custom-container">
+        
+            <header>
+                <h5>To Do List</h5>
+            </header>
+        
+            <div id="task-list" class="container-fluid d-flex flex-column justify-content-center align-items-center">
+                <div class="task"><input type="text" value="sample"></div>
+                <div class="task"><input type="text" value="sample"></div>
+                <div class="task"><input type="text" value="sample"></div>
+            </div>
+        </main>
+    </div>
 </body>
 </html>
