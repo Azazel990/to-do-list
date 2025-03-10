@@ -95,19 +95,40 @@
     TaskObj.task = $(".task");
     TaskObj.sampleTask = $("#sample-task")
 
+    $(document).ready(() => {
+        // load tasks lists...
+        const tasks = TaskObj.fetchTasks();
+        loadTasks(tasks);
+    })
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
         if(event.which == TaskObj.enterKey){
             TaskObj.createTask();
-            fetchData();
+            storeData();
         }    
     })
 
-    fetchData = () => {
+    loadTasks = (tasks) => {
+        tasks.forEach(task => {
+            const taskElement = $(TaskObj.sampleTask).clone().removeAttr("id").removeAttr("placeholder").attr("data-task-no",task.task_no).attr("data-status",task.task_status);
+            
+            taskElement[0].firstElementChild.value = task.task_name;
+
+            if(task.task_status){
+                $(TaskObj.incomplete).append(taskElement)
+            }else{
+                $(TaskObj.complete).append(taskElement)
+            }
+        });
+    }
+
+    storeData = () => {
         let tasks = [];
         $("[data-status]").each((event,element) => {
-            tasks.push({"task-name" : element.firstElementChild.value,"task-no" : element.getAttribute("data-task-no"),"task-status" : element.getAttribute("data-status")});
+            tasks.push({"task_name" : element.firstElementChild.value,"task_no" : element.getAttribute("data-task-no"),"task_status" : element.getAttribute("data-status")});
         })
-        TaskObj.storeData(tasks);
+        TaskObj.storeTasks(tasks);
     }
+
+    
 </script>

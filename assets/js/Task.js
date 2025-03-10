@@ -23,14 +23,12 @@ class Task{
             this.incomplete[0].append(new_task);
     
             this.cleanSlate();
-
-            this.storeData();
         }
     }
 
-    storeData = (data) => {
-        localStorage.setItem("task-list",JSON.stringify(data));
-    }
+    storeTasks = (data) => localStorage.setItem("task-list",JSON.stringify(data));
+
+    fetchTasks = () => JSON.parse(localStorage.getItem("task-list"));
 
     getTotalTasks = () => document.querySelectorAll('[data-status="0"]').length;
 
