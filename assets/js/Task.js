@@ -5,6 +5,7 @@ class Task{
     task = "";
     sampleTask= "";
     status = 0;
+    checkbox = "";
 
     constructor(){
     }

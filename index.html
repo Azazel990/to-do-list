@@ -66,20 +66,14 @@
                 <div class="task shadow d-flex" id="sample-task">
                     <input required type="text" placeholder="Enter Task...">
                     <div class="options d-flex align-items-center">
-                        <input type="checkbox" name="" id="">
+                        <input class="check" type="checkbox" name="" id="">
                         <i class="bi bi-trash"></i>
                     </div>
                 </div>
             </div>
             <hr>
             <div id="completed" class="container-fluid d-flex flex-column justify-content-start align-items-center">
-                <div class="task shadow d-flex" >
-                    <input type="text" >
-                    <div class="options d-flex align-items-center">
-                        <input type="checkbox" name="" id="">
-                        <i class="bi bi-trash"></i>
-                    </div>
-                </div>
+                
             </div>
         </main>
     </div>
@@ -93,12 +87,21 @@
     TaskObj.incomplete = $("#incomplete");
     TaskObj.complete = $("#completed");
     TaskObj.task = $(".task");
-    TaskObj.sampleTask = $("#sample-task")
+    TaskObj.sampleTask = $("#sample-task");
 
     $(document).ready(() => {
         // load tasks lists...
         const tasks = TaskObj.fetchTasks();
         loadTasks(tasks);
+        TaskObj.checkbox = $(".check");
+
+        $(TaskObj.checkbox).on("change",(event,element) => {
+            $(event.target).parents(".task").attr("data-status",1);
+            storeData();
+            clearTasksList();
+            loadTasks(TaskObj.fetchTasks());
+            TaskObj.checkbox = $(".check");
+        })
     })
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
@@ -108,13 +111,17 @@
         }    
     })
 
+    clearTasksList = () => {
+        $("[data-status]").remove();
+    }
+
     loadTasks = (tasks) => {
         tasks.forEach(task => {
             const taskElement = $(TaskObj.sampleTask).clone().removeAttr("id").removeAttr("placeholder").attr("data-task-no",task.task_no).attr("data-status",task.task_status);
             
             taskElement[0].firstElementChild.value = task.task_name;
 
-            if(task.task_status){
+            if(!parseInt(task.task_status)){
                 $(TaskObj.incomplete).append(taskElement)
             }else{
                 $(TaskObj.complete).append(taskElement)
