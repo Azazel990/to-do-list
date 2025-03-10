@@ -15,14 +15,21 @@ class Task{
 
         if(!this.checkDuplicate(new_task.firstElementChild.value)){
             const total = this.getTotalTasks();
+
             new_task.setAttribute("data-status",0);
             new_task.setAttribute("data-task-no",total + 1);
-    
             new_task.removeAttribute("id");
+            
             this.incomplete[0].append(new_task);
     
             this.cleanSlate();
+
+            this.storeData();
         }
+    }
+
+    storeData = (data) => {
+        localStorage.setItem("task-list",JSON.stringify(data));
     }
 
     getTotalTasks = () => document.querySelectorAll('[data-status="0"]').length;

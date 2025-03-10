@@ -99,7 +99,15 @@
     $(TaskObj.sampleTask).on("keypress",(event) => {
         if(event.which == TaskObj.enterKey){
             TaskObj.createTask();
-
+            fetchData();
         }    
     })
+
+    fetchData = () => {
+        let tasks = [];
+        $("[data-status]").each((event,element) => {
+            tasks.push({"task-name" : element.firstElementChild.value,"task-no" : element.getAttribute("data-task-no"),"task-status" : element.getAttribute("data-status")});
+        })
+        TaskObj.storeData(tasks);
+    }
 </script>
