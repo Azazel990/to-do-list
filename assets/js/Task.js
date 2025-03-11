@@ -20,10 +20,9 @@ class Task{
             new_task.setAttribute("data-status",0);
             new_task.setAttribute("data-task-no",total + 1);
             new_task.removeAttribute("id");
-            
-            this.incomplete[0].append(new_task);
     
             this.cleanSlate();
+            return new_task;
         }
     }
 
