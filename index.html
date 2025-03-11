@@ -72,7 +72,7 @@
                 <div class="task shadow d-flex" id="sample-task">
                     <input required type="text" placeholder="Enter Task...">
                     <div class="options d-flex align-items-center">
-                        <input class="check" type="checkbox" name="" id="">
+                        <input class="check" type="checkbox" onchange="changeTaskStatus(this)"  name="" id="">
                         <i class="bi bi-trash" onclick="deleteTask(this)"></i>
                     </div>
                 </div>
@@ -101,15 +101,14 @@
         loadTasks(tasks);
 
         document.querySelectorAll(".check").forEach(taskElement => {
-            taskElement.addEventListener("change",changeTaskStatus);
+            // taskElement.addEventListener("change",changeTaskStatus);
         });
-
     })
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
         if(event.which == TaskObj.enterKey && event.target.value != ""){
             const new_task = TaskObj.createTask();
-            $(new_task).children(".options").children(".check")[0].addEventListener("change",changeTaskStatus)
+            // $(new_task).children(".options").children(".check")[0].addEventListener("change",changeTaskStatus)
             $(TaskObj.incomplete).append(new_task);
             storeData();
         }
@@ -120,12 +119,13 @@
         storeData();
     }
 
-    changeTaskStatus = (event) => {
-        const status = getTaskStatus($(event.target).parents(".task"));
-        let element = $(event.target).parents(".task").clone();
+    changeTaskStatus = (ele) => {
+        const status = getTaskStatus($(ele).parents(".task"));
+        let element = $(ele).parents(".task").clone();
         
         $(element).attr("data-status",status == 0 ? 1 : 0)
         $(event.target).parents(".task").remove();
+
         switchTaskLane(element);
         storeData();
     }
