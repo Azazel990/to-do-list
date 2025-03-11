@@ -13,6 +13,7 @@
     <link rel="stylesheet" href="assets/css/style.css">
     
     <script src="assets/js/jquery.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-YvpcrYf0tY3lHB60NNkmXc5s9fDVZLESaAA55NDzOxhy9GkcIdslK1eN7N6jIeHz" crossorigin="anonymous"></script>
 </head>
 
 <style>
@@ -30,13 +31,14 @@
     }
     .task {
         width:80%;
-        margin: 5px 0;
+        margin: 10px 0;
         background: var(--task-grey);
     }
-    .task input{
+    .task input[type="text"]{
         width: 80% !important;
         padding: 5px 5px;
         background: var(--task-grey) !important;
+        border: 0 !important;
     }
     .task .options{
         min-width: 20%;
@@ -45,12 +47,30 @@
         margin: 25px 0;
         min-height: 300px;
     }
-    .shadow{
-        box-shadow: 2px 2px 4px rgba(0,0,0,0.5);
+    .shadow-effect{
+        box-shadow: 2px 2px 4px rgba(0,0,0,0.7);
     }
     #completed{
         opacity: 0.4;
     }
+    #sample-task .options{
+        display: none !important;
+    }
+    #sample-task .task, #sample-task input{
+        width: 100% !important;
+    }
+
+    .fade-in-bottom {
+        opacity: 0;
+        transform: translateY(50px);
+        transition: opacity 0.2s ease-out, transform 0.2s ease-out;
+    }
+
+    .show {
+        opacity: 1;
+        transform: translateY(0);
+    }
+
 </style>
 
 <script src="assets/js/Task.js"></script>
@@ -63,11 +83,11 @@
             </header>
         
             <div id="incomplete" class="container-fluid d-flex flex-column justify-content-start align-items-center">
-                <div class="task shadow d-flex" id="sample-task">
+                <div class="task shadow-effect d-flex fade-in-bottom" id="sample-task">
                     <input required type="text" placeholder="Enter Task...">
-                    <div class="options d-flex align-items-center">
-                        <input class="check" type="checkbox" name="" id="">
-                        <i class="bi bi-trash"></i>
+                    <div class="options d-flex justify-content-evenly align-items-center">
+                        <input class="check" type="checkbox" onchange="changeTaskStatus(this)"  name="" id="">
+                        <i class="bi bi-trash" onclick="deleteTask(this)"></i>
                     </div>
                 </div>
             </div>
@@ -93,37 +113,77 @@
         // load tasks lists...
         const tasks = TaskObj.fetchTasks();
         loadTasks(tasks);
-        TaskObj.checkbox = $(".check");
 
-        $(TaskObj.checkbox).on("change",(event,element) => {
-            $(event.target).parents(".task").attr("data-status",1);
-            storeData();
-            clearTasksList();
-            loadTasks(TaskObj.fetchTasks());
-            TaskObj.checkbox = $(".check");
-        })
+        setTimeout(() => {
+            $(".task").addClass(["active","show"]);
+        }, 100);
     })
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
-        if(event.which == TaskObj.enterKey){
-            TaskObj.createTask();
+        if(event.which == TaskObj.enterKey && event.target.value != ""){
+            const new_task = TaskObj.createTask();
+            hideElement(new_task);
+            $(TaskObj.incomplete).append(new_task);
             storeData();
-        }    
+            slideElementIn(new_task);
+        }
     })
 
-    clearTasksList = () => {
-        $("[data-status]").remove();
+    slideElementIn = (element) => {
+        setTimeout(() => {
+                $(element).addClass("show");
+        }, 100);
+    }
+
+    hideElement = (element) => $(element).removeClass("show") 
+
+    deleteTask = (element) => {
+        $(element).parents(".task").remove();
+        storeData();
+    }
+
+    changeTaskStatus = (ele) => {
+        const status = getTaskStatus($(ele).parents(".task"));
+        let element = $(ele).parents(".task").clone();
+        
+        $(element).attr("data-status",status == 0 ? 1 : 0)
+        $(ele).parents(".task").remove();
+
+        switchTaskLane(element);
+        storeData();
+    }
+
+    getTaskStatus = (element) => parseInt($(element).attr("data-status"));
+
+    setTaskStatus = (element,status) => $(element).parents(".task").attr("data-status",status);
+
+    switchTaskLane = (element) => {
+        hideElement(element);
+
+        if(getTaskStatus(element) == 0){
+            $(element).children("input").removeAttr("readonly");
+            $(TaskObj.incomplete).append(element);
+        } else {
+            $(element).children("input").attr("readonly",1);
+            $(TaskObj.complete).append(element);
+        }
+        
+        slideElementIn(element);
     }
 
     loadTasks = (tasks) => {
         tasks.forEach(task => {
             const taskElement = $(TaskObj.sampleTask).clone().removeAttr("id").removeAttr("placeholder").attr("data-task-no",task.task_no).attr("data-status",task.task_status);
             
+
+
             taskElement[0].firstElementChild.value = task.task_name;
 
             if(!parseInt(task.task_status)){
                 $(TaskObj.incomplete).append(taskElement)
             }else{
+                taskElement.children(".options").children(".check").attr("checked",true);
+                $(taskElement).children("input").attr("readonly",1);
                 $(TaskObj.complete).append(taskElement)
             }
         });
