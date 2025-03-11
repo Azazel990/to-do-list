@@ -109,15 +109,27 @@
     })
 
     changeTaskStatus = (event) => {
-        const ele = $(event.target).parents(".task").attr("data-status",1).clone();            
-        storeData();
+        const status = getTaskStatus($(event.target).parents(".task"));
+        let element = $(event.target).parents(".task").clone();
         
+        $(element).attr("data-status",status == 0 ? 1 : 0)
+        storeData();
         $(event.target).parents(".task").remove();
 
-        switchTaskLane(ele);
+        switchTaskLane(element);
     }
 
-    switchTaskLane = (element) => $(TaskObj.complete).append(element);
+    getTaskStatus = (element) => parseInt($(element).attr("data-status"));
+
+    setTaskStatus = (element,status) => $(element).parents(".task").attr("data-status",status);
+
+    switchTaskLane = (element) => {
+        if(getTaskStatus(element) == 0){
+            $(TaskObj.incomplete).append(element);
+        } else {
+            $(TaskObj.complete).append(element);
+        }
+    }
 
     loadTasks = (tasks) => {
         tasks.forEach(task => {
