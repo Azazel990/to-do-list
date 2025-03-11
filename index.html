@@ -51,6 +51,12 @@
     #completed{
         opacity: 0.4;
     }
+    #sample-task .options{
+        display: none !important;
+    }
+    #sample-task .task, #sample-task input{
+        width: 100% !important;
+    }
 </style>
 
 <script src="assets/js/Task.js"></script>
@@ -67,7 +73,7 @@
                     <input required type="text" placeholder="Enter Task...">
                     <div class="options d-flex align-items-center">
                         <input class="check" type="checkbox" name="" id="">
-                        <i class="bi bi-trash"></i>
+                        <i class="bi bi-trash" onclick="deleteTask(this)"></i>
                     </div>
                 </div>
             </div>
@@ -97,6 +103,7 @@
         document.querySelectorAll(".check").forEach(taskElement => {
             taskElement.addEventListener("change",changeTaskStatus);
         });
+
     })
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
@@ -108,15 +115,19 @@
         }
     })
 
+    deleteTask = (element) => {
+        $(element).parents(".task").remove();
+        storeData();
+    }
+
     changeTaskStatus = (event) => {
         const status = getTaskStatus($(event.target).parents(".task"));
         let element = $(event.target).parents(".task").clone();
         
         $(element).attr("data-status",status == 0 ? 1 : 0)
-        storeData();
         $(event.target).parents(".task").remove();
-
         switchTaskLane(element);
+        storeData();
     }
 
     getTaskStatus = (element) => parseInt($(element).attr("data-status"));
