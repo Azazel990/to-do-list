@@ -99,7 +99,7 @@
             </section>
             <hr>
             <div id="incomplete" class="container-fluid d-flex flex-column justify-content-start align-items-center">
-                <div class="task shadow-effect d-flex fade-in-bottom" id="sample-task">
+                <div class="task shadow-effect d-flex fade-in-bottom" id="sample-task" draggable="true" ondragover="dragover(event)" ondrop="dropped(event)">
                     <input required type="text" placeholder="Enter Task...">
                     <div class="options d-flex justify-content-evenly align-items-center">
                         <input class="check" type="checkbox" onchange="changeTaskStatus(this)"  name="" id="">
@@ -116,7 +116,7 @@
                     <i class="bi bi-trash3" onclick="emptyTaskList(1)"></i>
                </div>
             </section>
-            <hr>
+            <hr/>
             <div id="completed" class="container-fluid d-flex flex-column justify-content-start align-items-center">
                     
             </div>
@@ -157,6 +157,20 @@
         }
     })
 
+    dropped = (event) => {
+        const sourceTask = $(event.dataTransfer.mozSourceNode);
+        const targetTask = $(event.target.parentElement);
+        if(targetTask.attr("data-status") == 0){
+            const temp = $(sourceTask).clone();
+            sourceTask.attr("data-task-no",targetTask.attr("data-task-no")).children("input").val(targetTask.children("input").val());
+            targetTask.attr("data-task-no",temp.attr("data-task-no")).children("input").val(temp.children("input").val());
+        }
+    }
+
+    dragover = (event) => {
+        event.preventDefault();
+    }
+
     slideElementIn = (element) => {
         setTimeout(() => {
                 $(element).addClass("show");
@@ -189,10 +203,10 @@
         hideElement(element);
 
         if(getTaskStatus(element) == 0){
-            $(element).children("input").removeAttr("readonly");
+            $(element).children("input").removeAttr("readonly").attr("draggable",true);
             $(TaskObj.incomplete).append(element);
         } else {
-            $(element).children("input").attr("readonly",1);
+            $(element).removeAttr("draggable").children("input").attr("readonly",1);            
             $(TaskObj.complete).append(element);
         }
         
@@ -206,10 +220,11 @@
             taskElement[0].firstElementChild.value = task.task_name;
 
             if(!parseInt(task.task_status)){
+                $(taskElement).attr("draggable",true);
                 $(TaskObj.incomplete).append(taskElement)
             }else{
                 taskElement.children(".options").children(".check").attr("checked",true);
-                $(taskElement).children("input").attr("readonly",1);
+                $(taskElement).removeAttr("draggable").children("input").attr("readonly",1);
                 $(TaskObj.complete).append(taskElement)
             }
         });
