@@ -30,7 +30,7 @@ class Task{
 
     fetchTasks = () => JSON.parse(localStorage.getItem("task-list"));
 
-    getTotalTasks = () => document.querySelectorAll('[data-status="0"]').length;
+    getTotalTasks = () => document.querySelectorAll('[data-status]').length;
 
     checkDuplicate = (task_name) => {
         let flag = 0;
