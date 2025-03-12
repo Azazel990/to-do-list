@@ -71,6 +71,14 @@
         transform: translateY(0);
     }
 
+    .bulk-options{
+        width: 80%;
+        margin-left: auto;
+        margin-right: auto;
+    }
+    .bulk-options i{
+        margin: 0 10px;    
+    }
 </style>
 
 <script src="assets/js/Task.js"></script>
@@ -82,6 +90,14 @@
                 <h5>To Do List</h5>
             </header>
         
+            <section class="bulk-options d-flex justify-content-between align-items-end">
+                <div>Incomplete</div>
+                <div class="d-flex justify-content-end">
+                    <i class="bi bi-list-check" onclick="checkUncheckAll(0)"></i>
+                    <i class="bi bi-trash3" onclick="emptyTaskList(0)"></i>
+               </div>
+            </section>
+            <hr>
             <div id="incomplete" class="container-fluid d-flex flex-column justify-content-start align-items-center">
                 <div class="task shadow-effect d-flex fade-in-bottom" id="sample-task">
                     <input required type="text" placeholder="Enter Task...">
@@ -91,10 +107,20 @@
                     </div>
                 </div>
             </div>
+
+            <!-- completed tasks -->
+            <section class="bulk-options d-flex justify-content-between align-items-end">
+                <div>Completed</div>
+                <div class="d-flex justify-content-end">
+                    <i class="bi bi-arrow-counterclockwise" onclick="checkUncheckAll(1)"></i>
+                    <i class="bi bi-trash3" onclick="emptyTaskList(1)"></i>
+               </div>
+            </section>
             <hr>
             <div id="completed" class="container-fluid d-flex flex-column justify-content-start align-items-center">
-                
+                    
             </div>
+            <!-- completed tasks -->
         </main>
     </div>
 </body>
@@ -197,5 +223,22 @@
         TaskObj.storeTasks(tasks);
     }
 
+    emptyTaskList = (status) => {
+        $('[data-status='+status+']').remove();
+        storeData();
+    }
     
+    checkUncheckAll = (status) => {
+        $('[data-status='+status+']').each((index,element) => {
+            
+            $(element).attr("data-status",status == 0 ? 1 : 0);
+            const check = $(element).children(".options").children(".check");
+            
+            if(check.prop("checked")) check.prop("checked",false);
+            else check.prop("checked",true);
+
+            switchTaskLane(element);
+        })
+        storeData();
+    }
 </script>
