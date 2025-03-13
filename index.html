@@ -151,8 +151,7 @@
         if(event.which == TaskObj.enterKey && event.target.value != ""){
             const new_task = TaskObj.createTask();
             hideElement(new_task);
-            const order_no = getMaxOrderNo() + 1;
-            $(new_task).attr("data-order-no",order_no);
+            $(new_task).attr("data-order-no",getMaxOrderNo() + 1);
             $(TaskObj.incomplete).append(new_task);
             storeData();
             slideElementIn(new_task);
@@ -162,11 +161,9 @@
     getMaxOrderNo = () => {
         let orders = [];
         $("[data-status]").each((index,element) => {
-            console.log(element);
-            orders.push($(element).attr("[data-status]"))
+            orders.push(parseInt($(element).attr("data-order-no")))
         })
-
-        return parseInt(Math.max(orders));
+        return orders.length == 0 ? 0 : Math.max(...orders);
     }
 
     dropped = (event) => {
@@ -176,12 +173,11 @@
             const temp = $(sourceTask).clone();
             sourceTask.attr("data-task-no",targetTask.attr("data-task-no")).children("input").val(targetTask.children("input").val());
             targetTask.attr("data-task-no",temp.attr("data-task-no")).children("input").val(temp.children("input").val());
+            storeData();
         }
     }
 
-    dragover = (event) => {
-        event.preventDefault();
-    }
+    dragover = (event) => event.preventDefault();
 
     slideElementIn = (element) => {
         setTimeout(() => {
@@ -245,7 +241,6 @@
     storeData = () => {
         let tasks = [];
         $("[data-status]").each((event,element) => {
-            console.log($(element).attr("data-order-no"));
             tasks.push({"task_name" : element.firstElementChild.value,"task_no" : element.getAttribute("data-task-no"),"task_status" : element.getAttribute("data-status"),"task_order_no": $(element).attr("data-order-no")});
         })
         TaskObj.storeTasks(tasks);
