@@ -170,11 +170,10 @@
     getTotalTasks = () => document.querySelectorAll('[data-status]').length;
 
     checkDuplicate = (task_name) => {
-        console.log(task_name);
         let flag = 0;
         
-        $(TaskObj.incomplete).each((index,element) => {
-            if($(element).children(TaskObj.taskNameField).val() == task_name && $(element).attr("id") == ""){
+        $("[data-status='0']").each((index,element) => {
+            if($(element).children(TaskObj.taskNameField).val() == task_name){
                 flag = 1;
             }
         })
