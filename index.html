@@ -79,6 +79,14 @@
     .bulk-options i{
         margin: 0 10px;    
     }
+    .grab{
+        /* border-right: 1px solid #333; */
+        min-width: 50px;
+    }
+    .grab i{
+        font-size: 1.5em;
+        color: #787878 !important;
+    }
 </style>
 
 <script src="assets/js/Task.js"></script>
@@ -100,6 +108,7 @@
             <hr>
             <div id="incomplete" class="container-fluid d-flex flex-column justify-content-start align-items-center">
                 <div class="task shadow-effect d-flex fade-in-bottom" id="sample-task" draggable="true" ondragover="dragover(event)" ondrop="dropped(event)">
+                    <div class="grab d-flex justify-content-center align-items-center"><i class="bi bi-grip-horizontal"></i></div>
                     <input required type="text" class="task_name_field" placeholder="Enter Task...">
                     <div class="options d-flex justify-content-evenly align-items-center">
                         <input class="check" type="checkbox" onchange="changeTaskStatus(this)"  name="" id="">
@@ -134,10 +143,9 @@
     TaskObj.complete = $("#completed");
     TaskObj.task = $(".task");
     TaskObj.sampleTask = $("#sample-task");
-    TaskObj.taskNameField = $(".task_name_field");
+    TaskObj.taskNameField = ".task_name_field";
     TaskObj.enterKey = 13;
 
-    console.log(TaskObj);
     $(document).ready(() => {
         // load tasks lists...
         const tasks = fetchTasks() || []; 
@@ -148,6 +156,12 @@
         setTimeout(() => {
             $(".task").addClass(["active","show"]);
         }, 100);
+
+        $(".task_name_field").on("focusout",function(){
+            if($(this).parent(".task").attr("id") == undefined){
+                storeData();
+            }
+        })
     })
 
     createTask = () => {
@@ -173,6 +187,7 @@
         let flag = 0;
         
         $("[data-status='0']").each((index,element) => {
+            console.log(element);
             if($(element).children(TaskObj.taskNameField).val() == task_name){
                 flag = 1;
             }
@@ -184,7 +199,7 @@
     fetchTasks = () => JSON.parse(localStorage.getItem("task-list"));
 
     $(TaskObj.sampleTask).on("keypress",(event) => {
-        if(event.which == TaskObj.enterKey && event.target.value != ""){
+        if(event.which == TaskObj.enterKey && event.target.value.trim() != ""){
             const new_task = createTask();
             hideElement(new_task);
             $(new_task).attr("data-order-no",getMaxOrderNo() + 1);
@@ -205,10 +220,10 @@
     dropped = (event) => {
         const sourceTask = $(event.dataTransfer.mozSourceNode);
         const targetTask = $(event.target.parentElement);
-        if(targetTask.attr("data-status") == 0){
+        if(targetTask.attr("data-status") == 0 && sourceTask.attr("data-status") == 0){
             const temp = $(sourceTask).clone();
-            sourceTask.attr("data-task-no",targetTask.attr("data-task-no")).children("input").val(targetTask.children("input").val());
-            targetTask.attr("data-task-no",temp.attr("data-task-no")).children("input").val(temp.children("input").val());
+            sourceTask.attr("data-task-no",targetTask.attr("data-task-no")).children(TaskObj.taskNameField).val(targetTask.children(TaskObj.taskNameField).val());
+            targetTask.attr("data-task-no",temp.attr("data-task-no")).children(TaskObj.taskNameField).val(temp.children(TaskObj.taskNameField).val());
             storeData();
         }
     }
@@ -277,8 +292,10 @@
     storeData = () => {
         let tasks = [];
         
-        $("[data-status]").each((event,element) => {
-            tasks.push({"task_name" : $(element).children(TaskObj.taskNameField).val(),"task_no" : element.getAttribute("data-task-no"),"task_status" : element.getAttribute("data-status"),"task_order_no": $(element).attr("data-order-no")});
+        $("[data-status]").each((index,element) => {
+            if($(element).children(TaskObj.taskNameField).val().trim() != ""){
+                tasks.push({"task_name" : $(element).children(TaskObj.taskNameField).val(),"task_no" : element.getAttribute("data-task-no"),"task_status" : element.getAttribute("data-status"),"task_order_no": $(element).attr("data-order-no")});
+            }
         })
 
         localStorage.setItem("task-list",JSON.stringify(tasks))  
